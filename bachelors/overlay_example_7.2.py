@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from myplot import myplot
 
 pi=np.pi
-numSamples=24
+numSamples=128
 dt=1./numSamples
 
 xx=np.linspace(-11./24,12./24,numSamples)
@@ -12,18 +12,13 @@ xxp=np.linspace(-0.5,0.5,numSamples)
 fx=np.cos(2*pi*xx) + 0.5*np.cos(10*pi*xx) + (1./3)*np.cos(12*pi*xx)
 fx1=np.cos(2*pi*xx)
 
-def low_ring_filt1(f,start,stop):
-	filt=np.ones(len(f))
-	slope = 1./abs((stop-start))
-	for i in range(len(f)):
-		if stop>=i>=start:
-			filt[i]=filt[i-1]-slope
-		if i >= stop:
-			filt[i]=0
-	filt[len(fx)/2:]=np.flip(filt[:len(fx)/2],0)
+def standard_square_pulse(n,width,c=1.,tweek=0):
+	filt=np.zeros(n)
+	filt[n/2-(width/2+tweek+1)],filt[n/2+(width/2+tweek+1)]=c/2,c/2
+	filt[n/2-(width/2+tweek):n/2+(width/2+1+tweek)]=c
 	return filt
-hn=np.fft.fftshift([0,0,0,0,0,0,0,0,0,0,1./8,1./4,1./4,1./4,1./8,0,0,0,0,0,0,0,0,0])
-print(hn)
+#hn=np.fft.fftshift([0,0,0,0,0,0,0,0,0,0,1./8,1./4,1./4,1./4,1./8,0,0,0,0,0,0,0,0,0])
+hn=np.fft.fftshift(standard_square_pulse(numSamples,int(0.125*numSamples),c=1./(numSamples/6)))
 
 fx2=np.fft.ifft(np.fft.fft(fx)*np.fft.fft(hn))
 
@@ -56,10 +51,11 @@ plt.xlabel('X')
 plt.legend()
 
 print(np.linalg.norm(abs(fx1-fx2),2))
-
+"""
 plt.figure()
 plt.plot(xx,abs(fx1-fx2))
 plt.xlabel('X')
 plt.title('absolute difference')
+"""
 plt.show()
 
