@@ -18,7 +18,6 @@ def standard_square_pulse(n,width,c=1.,tweek=0):
 	filt[n/2-(width/2+tweek):n/2+(width/2+1+tweek)]=c
 	return filt
 
-hn=np.fft.fftshift(standard_square_pulse(numSamples,int(0.125*numSamples),c=1./(numSamples/6)))
 
 def tapering_filt(n,dx,width,c=1.,tweek=0):
 	filt=np.zeros(n)
@@ -27,7 +26,17 @@ def tapering_filt(n,dx,width,c=1.,tweek=0):
 		filt[n/2-(width/2+tweek+i)],filt[n/2+(width/2+tweek+i)]=(dx-i)*(c/dx),(dx-i)*(c/dx)
 	return filt
 
+def sin_filt(n,dx,width,c=1.,tweek=0):
+	filt=np.zeros(n)
+	filt[n/2-(width/2+tweek):n/2+(width/2+1+tweek)]=c
+	for i in range(dx):
+		filt[n/2-(width/2+tweek+i)],filt[n/2+(width/2+tweek+i)]=c*np.sin(pi*(dx-i)/(2*dx)),c*np.sin(pi*(dx-i)/(2*dx))
+	return filt
+#hn=np.fft.fftshift(standard_square_pulse(numSamples,int(0.125*numSamples),c=1./(numSamples/6)))
 #hn=np.fft.fftshift(tapering_filt(numSamples,numSamples/4,int(0.125*numSamples),c=1./6))
+#hn=np.fft.fftshift(sin_filt(numSamples,numSamples/4,int(0.125*numSamples),c=1./6))
+hn=np.fft.fftshift(sin_filt(numSamples,numSamples/4,int(0.125*numSamples),c=1./6))
+print(hn)
 fx2=np.fft.ifft(np.fft.fft(fx)*np.fft.fft(hn))
 #fx2=np.fft.ifft(np.fft.fft(fx)*hn)
 def fft_plot_and_sublpot(xx,fx,dt=1):
@@ -59,7 +68,7 @@ plt.figure()
 
 
 plt.subplot(211)
-plt.title('Square pulse low pass filter')
+plt.title('Sin low pass filter')
 plt.plot(xx,fx,label='unthresholded function f(x)')
 plt.legend()
 
