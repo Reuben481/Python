@@ -3,12 +3,15 @@ def text_to_stringlist(String):
 	while len(String) > 0:
 		new_word = String[0:String.find(' ')]
 		if String.find(' ') ==-1:
-			list.append(String)
+			list.append(String[0:len(String)-1])
 			break
-		list.append(new_word)
+		if new_word.find(".")==-1:
+			list.append(new_word)
+		else:
+			list.append(new_word[0:len(new_word)-1])
 		String = String[String.find(' ') + 1: len(String)]
 		if len(list)>100:
 			break
 	return list
 
-print(text_to_stringlist("Hello world my name is nero and im a bot."))
+#print(text_to_stringlist("Hello world i am a bat. I am not a ball. You are a banana."))
