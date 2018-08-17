@@ -10,8 +10,6 @@ def text_to_stringlist(String):
 		else:
 			list.append(new_word[0:len(new_word)-1])
 		String = String[String.find(' ') + 1: len(String)]
-		if len(list)>100:
-			break
 	return list
 
 #print(text_to_stringlist("Hello world i am a bat. I am not a ball. You are a banana."))
